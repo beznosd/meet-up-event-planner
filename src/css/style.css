@@ -1,0 +1,101 @@
+.auth-header {
+	margin-bottom: 30px;
+}
+
+.btn-fluid {
+	width: 100%;
+}
+
+.error-msg {
+	color: #F44336;
+}
+
+.app-content {
+	width: 532px;
+	margin: 40px auto;
+}
+
+.picker__list {
+	padding-bottom: 10px;
+}
+
+h5 {
+	font-size: 1.5rem;
+}
+
+.event-item-link {
+	color: #49e5d6 !important;
+}
+
+.delete-event-icon {
+	cursor: pointer;
+	color: #49e5d6;
+	float: left;
+}
+
+.event-item-link:hover,
+.delete-event-icon:hover {
+	color: #b2fff7 !important;
+}
+
+.no-margin-row {
+	margin-bottom: 0;
+}
+
+.guest {
+	font-size: 1.05rem;
+}
+
+.guest:hover {
+	cursor: pointer;
+	color: #F44336;
+}
+
+.event-content {
+	font-size: 1.2rem;
+}
+
+.logout-icon {
+	cursor: pointer;
+	position: absolute;
+	right: 10%;
+	top: 43px;
+}
+
+.back-icon {
+	cursor: pointer;
+	position: absolute;
+	left: 10%;
+	top: 43px;
+}
+
+@media screen and (max-width: 768px) {
+	.logout-icon,
+	.back-icon {
+		top: 93px;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	h2 {
+		width: 500px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.app-content {
+		padding: 0 10px;
+		width: 100%;
+	}
+}
+
+@media screen and (max-width: 515px) {
+	h2 {
+		width: 100%;
+	}
+
+	.logout-icon,
+	.back-icon {
+		top: 93px;
+	}
+}
