@@ -6,7 +6,7 @@ All information are being kept in localStorage, without backend, just webpack de
 
 ## How to run
 1. Install dependencies via npm
-2. Run ```npm start``` in console, wait a minute
+2. Run ```npm start``` in project folder, wait a minute
 3. Open this address http://localhost:8080 in your browser
 
 ## Core libraries, frameworks, tools used in this project
