@@ -5,8 +5,10 @@ Pretty simple event planner which includes creating and deleting of events, also
 All information are being kept in localStorage, without backend, just webpack dev server for browserHistory of React Router
 
 ## How to run
-1. Install dependencies via npm
-2. Run ```npm start``` in project folder, wait a minute
+1. Clone or download the repo and go to the project directory
+$ ```git clone https://github.com/beznosd/meet-up-event-planner.git```
+2. Install dependencies via npm $```npm install```
+3. Run $```npm start``` in project folder, wait a minute
 3. Open this address ```http://localhost:8080``` in your browser
 
 ## Core libraries, frameworks, tools used in this project
