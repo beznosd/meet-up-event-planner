@@ -26,25 +26,75 @@ export default class CreateEvent extends Component {
 		$(this.startDateInput).pickadate({
 			onSet: () => {
 				this.hideInputError('startDate');
+				this.hideInputError('startTime');
+				const startDate = this.startDateInput.value.trim();
+				const startTime = this.startTimeInput.value.trim();
+				const date = this.getDateObject();
+				if (new Date(date.year, date.month, date.day) > new Date(startDate)) {
+					this.showInputError('startDate', 'Event cannot be started in the past');
+					if (startTime && parseInt(startTime, 10) < new Date().getHours()) {
+						this.showInputError('startTime', 'Event cannot be started in the past');
+					}
+				}
+				if (new Date(date.year, date.month, date.day).toDateString() === new Date(startDate).toDateString()) {
+					if (startTime && parseInt(startTime, 10) < new Date().getHours()) {
+						this.showInputError('startTime', 'Event cannot be started in the past');
+					}
+				}
 			}
 		});
+
 		$(this.endDateInput).pickadate({
 			onSet: () => {
 				this.hideInputError('endDate');
+				this.hideInputError('endTime');
+				const endDate = this.endDateInput.value.trim();
+				const endTime = this.endTimeInput.value.trim();
+				const date = this.getDateObject();
+				if (new Date(date.year, date.month, date.day) > new Date(endDate)) {
+					this.showInputError('endDate', 'Event cannot be finished in the past');
+				}
+				if (new Date(date.year, date.month, date.day).toDateString() === new Date(endDate).toDateString()) {
+					if (endTime && parseInt(endTime, 10) < new Date().getHours()) {
+						this.showInputError('endTime', 'Event cannot be finished in the past');
+					}
+				}
 			}
 		});
+
 		$(this.startTimeInput).pickatime({
 			format: 'H:i',
 			interval: 60,
 			onSet: () => {
 				this.hideInputError('startTime');
+				const startDate = this.startDateInput.value.trim();
+				const startTime = this.startTimeInput.value.trim();
+				const date = this.getDateObject();
+				if (new Date(date.year, date.month, date.day).toDateString() === new Date(startDate).toDateString()) {
+					if (parseInt(startTime, 10) < new Date().getHours()) {
+						this.showInputError('startTime', 'Event cannot be started in the past');
+					}
+				}
 			}
 		});
+
 		$(this.endTimeInput).pickatime({
 			format: 'H:i',
 			interval: 60,
 			onSet: () => {
 				this.hideInputError('endTime');
+				const startDate = this.startDateInput.value.trim();
+				const endDate = this.endDateInput.value.trim();
+				const startTime = this.startTimeInput.value.trim();
+				const endTime = this.endTimeInput.value.trim();
+				if (startDate === endDate && startDate && endDate) {
+					if (parseInt(startTime, 10) > parseInt(endTime, 10)) {
+						this.showInputError('endTime', 'End date cannot be lower then start date');
+					}
+					if (startTime === endTime) {
+						this.showInputError('endTime', 'Event cannot starts and ends at the same time');
+					}
+				}
 			}
 		});
 
@@ -119,6 +169,15 @@ export default class CreateEvent extends Component {
 		if (evt.target.value.trim()) {
 			this.hideInputError(evt.target.id);
 		}
+	}
+
+	getDateObject() {
+		const now = new Date();
+		return {
+			year: now.getFullYear(),
+			month: now.getMonth(),
+			day: now.getDate()
+		};
 	}
 
 	changePropgress(input, progressStep) {
@@ -201,18 +260,15 @@ export default class CreateEvent extends Component {
 			isError = true;
 		}
 
-		const now = new Date();
-		const year = now.getFullYear();
-		const month = now.getMonth();
-		const date = now.getDate();
+		const date = this.getDateObject();
 
-		if (new Date(year, month, date) > new Date(startDate)) {
+		if (new Date(date.year, date.month, date.day) > new Date(startDate)) {
 			this.showInputError('startDate', 'Event cannot be started in the past');
 			isError = true;
 		}
 		
-		if (new Date(year, month, date).toDateString() === new Date(startDate).toDateString()) {
-			if (parseInt(startTime, 10) < now.getHours()) {
+		if (new Date(date.year, date.month, date.day).toDateString() === new Date(startDate).toDateString()) {
+			if (parseInt(startTime, 10) < new Date().getHours()) {
 				this.showInputError('startTime', 'Event cannot be started in the past');
 				isError = true;
 			}

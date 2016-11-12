@@ -91,6 +91,11 @@ if (ENV_PRODUCTION) {
 				unsafe: false
 			}
 		}),
-		new CssSourcemapPlugin()
+		new CssSourcemapPlugin(),
+		new webpack.DefinePlugin({
+			'process.env': { 
+				NODE_ENV: JSON.stringify('production') 
+			}
+		})
 	);
 }

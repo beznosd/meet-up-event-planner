@@ -29,6 +29,10 @@ export default class SignUp extends Component {
 	}
 
 	checkEmail() {
+		if (!localStorage.users) {
+			localStorage.users = JSON.stringify([]);
+		}
+
 		const email = this.emailInput.value.trim();
 		const users = JSON.parse(localStorage.users);
 

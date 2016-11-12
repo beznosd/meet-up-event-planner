@@ -18,6 +18,10 @@ export default class Login extends Component {
 			return false;
 		}
 
+		if (!localStorage.users) {
+			localStorage.users = JSON.stringify([]);
+		}
+
 		const users = JSON.parse(localStorage.users);
 		
 		let success = false;
