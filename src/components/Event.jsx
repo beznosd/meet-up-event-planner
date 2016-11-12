@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router';
+import React from 'react';
 
 const Event = (props) => {
 	const currentUser = localStorage.currentUser;

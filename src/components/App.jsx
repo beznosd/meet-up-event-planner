@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { browserHistory } from 'react-router';
 
 export default class App extends Component {
@@ -17,7 +17,7 @@ export default class App extends Component {
 			}
 		}
 
-		let backIcon = <i onClick={() => browserHistory.goBack()} className="material-icons back-icon small">arrow_back</i>;;
+		let backIcon = <i onClick={() => browserHistory.goBack()} className="material-icons back-icon small">arrow_back</i>;
 		let logoutIcon = <i onClick={this.logout} className="material-icons logout-icon small">exit_to_app</i>;
 
 		if (location === '/login' || location === '/signup' || location === '/' || rout404) {
@@ -41,7 +41,7 @@ export default class App extends Component {
 }
 
 App.propTypes = {
-	children: React.PropTypes.object,
-	location: React.PropTypes.object,
-	routes: React.PropTypes.object
+	routes: PropTypes.array,
+	children: PropTypes.object,
+	location: PropTypes.object
 };

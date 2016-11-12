@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
 
 const EventsListItem = (props) => {
@@ -21,14 +21,14 @@ const EventsListItem = (props) => {
 };
 
 EventsListItem.propTypes = {
-	name: React.PropTypes.string,
-	startDate: React.PropTypes.string,
-	startTime: React.PropTypes.string,
-	endDate: React.PropTypes.string,
-	endTime: React.PropTypes.string,
-	location: React.PropTypes.string,
-	removeEvent: React.PropTypes.function,
-	id: React.PropTypes.number
+	name: PropTypes.string,
+	startDate: PropTypes.string,
+	startTime: PropTypes.string,
+	endDate: PropTypes.string,
+	endTime: PropTypes.string,
+	location: PropTypes.string,
+	removeEvent: PropTypes.func,
+	id: PropTypes.number
 };
 
 export default EventsListItem;

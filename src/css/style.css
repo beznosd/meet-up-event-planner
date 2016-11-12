@@ -1,5 +1,8 @@
-.auth-header {
-	margin-bottom: 30px;
+/* App */
+
+.app-content {
+	width: 532px;
+	margin: 40px auto;
 }
 
 .btn-fluid {
@@ -10,17 +13,65 @@
 	color: #F44336;
 }
 
-.app-content {
-	width: 532px;
-	margin: 40px auto;
+h5 {
+	font-size: 1.5rem;
+}
+
+.no-margin-row {
+	margin-bottom: 0;
+}
+
+.no-margin-col {
+	margin-top: 0;
+}
+
+.back-icon {
+	cursor: pointer;
+	position: absolute;
+	left: 10%;
+	top: 43px;
+}
+
+.logout-icon {
+	cursor: pointer;
+	position: absolute;
+	right: 10%;
+	top: 43px;
+}
+
+.hidden {
+	display: none;
+}
+
+/* Login / Sign up */
+
+.auth-header {
+	margin-bottom: 30px;
+}
+
+.add-info-signup-link {
+	color: #039be5;
+	cursor: pointer;
+}
+
+.aditional-info {
+	margin-top: 20px;
+}
+
+/*.password-rules {
+	font-size: 0.9rem;
+}*/
+
+/* Event creation */
+
+.progress {
+	position: absolute;
+	top: 0;
+	margin-top: 0;
 }
 
 .picker__list {
 	padding-bottom: 10px;
-}
-
-h5 {
-	font-size: 1.5rem;
 }
 
 .event-item-link {
@@ -38,10 +89,6 @@ h5 {
 	color: #b2fff7 !important;
 }
 
-.no-margin-row {
-	margin-bottom: 0;
-}
-
 .guest {
 	font-size: 1.05rem;
 }
@@ -55,19 +102,7 @@ h5 {
 	font-size: 1.2rem;
 }
 
-.logout-icon {
-	cursor: pointer;
-	position: absolute;
-	right: 10%;
-	top: 43px;
-}
-
-.back-icon {
-	cursor: pointer;
-	position: absolute;
-	left: 10%;
-	top: 43px;
-}
+/* Media queries */
 
 @media screen and (max-width: 768px) {
 	.logout-icon,

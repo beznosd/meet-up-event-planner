@@ -3,8 +3,10 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CssSourcemapPlugin = require('css-sourcemaps-webpack-plugin');
 
+const ENV_PRODUCTION = process.env.NODE_ENV || false;
+
 module.exports = {
-	devtool: 'source-map',
+	devtool: ENV_PRODUCTION ? 'source-map' : 'inline-source-map',
 
 	entry: path.join(__dirname, '/src/index.jsx'),
 	output: {
@@ -15,8 +17,9 @@ module.exports = {
 	module: {
 		loaders: [
 			{
-				exclude: '/node_modules/',
-				loader: 'babel-loader'
+				// exclude: /\/node_modules\//,
+				include: path.join(__dirname, '/src'),
+				loader: 'babel'
 			},
 			{
 				test: /\.css$/,
@@ -24,11 +27,11 @@ module.exports = {
 			},
 			{ 
 				test: /\.png$/, 
-				loader: 'url-loader?limit=100000' 
+				loader: 'url?limit=100000' 
 			},
 			{ 
 				test: /\.jpg$/, 
-				loader: 'file-loader' 
+				loader: 'file' 
 			},
 			{
 				test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, 
@@ -50,19 +53,26 @@ module.exports = {
 	},
 
 	resolve: {
+		modulesDirectories: ['node_modules'],
 		extensions: ['', '.js', '.jsx'],
 		alias: { picker: 'pickadate/lib/picker' }
 	},
+	resolveLoader: {
+		modulesDirectories: ['node_modules'],
+		moduleTemplate: ['*-loader', '*'],
+		extensions: ['', '.js']
+	},
 
 	plugins: [
-		new webpack.optimize.UglifyJsPlugin(),
-		new CssSourcemapPlugin(),
-		new ExtractTextPlugin('style.css'),
+		new ExtractTextPlugin('style.css', { disable: !ENV_PRODUCTION }),
 		new webpack.ProvidePlugin({
 			$: 'jquery',
-			jQuery: 'jquery'
-		}),
+		})
 	],
+
+	watchOptions: {
+		aggregateTimeout: 100
+	},
 
 	devServer: {
 		contentBase: './public',
@@ -71,3 +81,16 @@ module.exports = {
 		inline: true
 	}
 };
+
+if (ENV_PRODUCTION) {
+	module.exports.plugins.push(
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false,
+				drop_console: false,
+				unsafe: false
+			}
+		}),
+		new CssSourcemapPlugin()
+	);
+}

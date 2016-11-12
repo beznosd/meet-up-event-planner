@@ -5,7 +5,10 @@ export default class CreateEvent extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = { focusGuests: false };
+		this.state = { 
+			focusGuests: false,
+			progressWidth: 0
+		};
 
 		this.createEvent = this.createEvent.bind(this);
 		this.onFocusGuests = this.onFocusGuests.bind(this);
@@ -13,18 +16,68 @@ export default class CreateEvent extends Component {
 		this.onKeyPressGuests = this.onKeyPressGuests.bind(this);
 		this.onFormKeyPress = this.onFormKeyPress.bind(this);
 		this.onClickGuestList = this.onClickGuestList.bind(this);
+		this.onInputTextField = this.onInputTextField.bind(this);
+		this.onBlurTextField = this.onBlurTextField.bind(this);
 	}
 
 	componentDidMount() {
-		$('.datepicker').pickadate();
-		$('.timepicker').pickatime({
-			format: 'H:i',
-			interval: 60
+		// initialization of pickadate
+
+		$(this.startDateInput).pickadate({
+			onSet: () => {
+				this.hideInputError('startDate');
+			}
 		});
+		$(this.endDateInput).pickadate({
+			onSet: () => {
+				this.hideInputError('endDate');
+			}
+		});
+		$(this.startTimeInput).pickatime({
+			format: 'H:i',
+			interval: 60,
+			onSet: () => {
+				this.hideInputError('startTime');
+			}
+		});
+		$(this.endTimeInput).pickatime({
+			format: 'H:i',
+			interval: 60,
+			onSet: () => {
+				this.hideInputError('endTime');
+			}
+		});
+
+		// Initialization of top progress
+
+		const progress = document.querySelector('.progress');
+
+		window.scrollTo(0, 0);
+
+		window.onscroll = () => {
+			progress.style.top = `${window.pageYOffset}px`;
+		};
+
+		const progressStep = 100 / 10;
+
+		// improve with bubbling, one callback to the form
+		[].forEach.call(this.eventForm, (input) => {
+			if (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA') {
+				input.oninput = () => {
+					this.changePropgress(input, progressStep);
+				};
+				input.onchange = () => {
+					this.changePropgress(input, progressStep);
+				};
+			}
+		});
+
+		// initialization of google address autocomplete
+		new google.maps.places.Autocomplete(this.locationInput);
 	}
 
 	onClickGuestList(evt) {
-		this.guestList.removeChild(evt.nativeEvent.target);
+		this.guestList.removeChild(evt.target.parentNode);
 	}
 
 	onFormKeyPress(evt) {
@@ -37,104 +90,158 @@ export default class CreateEvent extends Component {
 		this.setState({ focusGuests: true });
 	}
 
-	onBlurGuests() {
+	onBlurGuests(evt) {
 		this.setState({ focusGuests: false });
+		if (!this.guestList.children.length) {
+			this.showInputError('guests', 'This field is required');
+		}
 	}
 
 	onKeyPressGuests(evt) {
-		const guestName = this.guestInput.value;
+		const guestName = this.guestsInput.value;
 		if (evt.key === 'Enter' && guestName) {
 			const el = document.createElement('span');
 			el.innerHTML = `&bull; <span>${guestName}</span><br/>`;
 			el.className = 'guest';
 			this.guestList.appendChild(el);
-			this.guestInput.value = '';
+			this.guestsInput.value = '';
+			this.hideInputError('guests');
 		}
 	}
 
-	hideFormErrors() {
-		this.formErrors.innerHTML = '';
+	onBlurTextField(evt) {
+		if (!evt.target.value.trim()) {
+			this.showInputError(evt.target.id, 'This fiels is required');
+		}
 	}
 
-	showFormErrors(errorMessages) {
-		let errorsHtml = '';
-		errorMessages.forEach((message) => {
-			errorsHtml += `<div>&bull; ${message}</div>\n`;
-		});
-		this.formErrors.innerHTML = errorsHtml;
+	onInputTextField(evt) {
+		if (evt.target.value.trim()) {
+			this.hideInputError(evt.target.id);
+		}
+	}
+
+	changePropgress(input, progressStep) {
+		const determinate = document.querySelector('.determinate');
+
+		if (input.value.length !== 0 && !input.progressChecked) {
+			this.setState({ progressWidth: this.state.progressWidth + progressStep });
+			input.progressChecked = true;
+		}
+
+		if (input.value.length === 0 && input.progressChecked) {
+			this.setState({ progressWidth: this.state.progressWidth - progressStep });
+			input.progressChecked = false;
+		}
+	}
+
+	showInputError(inputType, message = '') {
+		this[`${inputType}Error`].textContent = message;
+		this[`${inputType}Input`].classList.add('invalid');
+	}
+
+	hideInputError(inputType) {
+		this[`${inputType}Error`].textContent = '';
+		this[`${inputType}Input`].classList.remove('invalid');
 	}
 
 	createEvent(evt) {
 		evt.preventDefault();
 
-		const errorMessages = [];
-
-		const name = this.nameInput.value;
-		const type = this.typeInput.value;
-		const host = this.hostInput.value;
-		const startDate = this.startDateInput.value;
-		const startTime = this.startTimeInput.value;
-		const endDate = this.endDateInput.value;
-		const endTime = this.endTimeInput.value;
-		const location = this.locationInput.value;
-		const message = this.messageInput.value;
+		const name = this.nameInput.value.trim();
+		const type = this.typeInput.value.trim();
+		const host = this.hostInput.value.trim();
+		const startDate = this.startDateInput.value.trim();
+		const startTime = this.startTimeInput.value.trim();
+		const endDate = this.endDateInput.value.trim();
+		const endTime = this.endTimeInput.value.trim();
+		const location = this.locationInput.value.trim();
+		const message = this.messageInput.value.trim();
 		const guestsElements = this.guestList.children;
 
+		let isError = false;
+
 		if (!name) {
-			errorMessages.push('Please provide event name');
+			this.showInputError('name', 'Please provide event name');
+			isError = true;
 		}
 
 		if (!type) {
-			errorMessages.push('Please provide event type');
+			this.showInputError('type', 'Please provide event type');
+			isError = true;
 		}
 
 		if (!host) {
-			errorMessages.push('Please provide event host');
+			this.showInputError('host', 'Please provide event host');
+			isError = true;
 		}
 
 		if (!startDate) {
-			errorMessages.push('Please choose start date of event');
+			this.showInputError('startDate', 'Please choose start date of event');
+			isError = true;
 		}
 
 		if (!startTime) {
-			errorMessages.push('Please choose start time of event');
+			this.showInputError('startTime', 'Please choose start time of event');
+			isError = true;
 		}
 
 		if (!endDate) {
-			errorMessages.push('Please choose end date of event');
+			this.showInputError('endDate', 'Please choose end date of event');
+			isError = true;
 		}
 
 		if (!endTime) {
-			errorMessages.push('Please choose end time of event');
+			this.showInputError('endTime', 'Please choose end time of event');
+			isError = true;
 		}
 
 		if (new Date(startDate) > new Date(endDate)) {
-			errorMessages.push('End date cannot be lower then start date');
+			this.showInputError('endDate', 'End date cannot be lower then start date');
+			isError = true;
+		}
+
+		const now = new Date();
+		const year = now.getFullYear();
+		const month = now.getMonth();
+		const date = now.getDate();
+
+		if (new Date(year, month, date) > new Date(startDate)) {
+			this.showInputError('startDate', 'Event cannot be started in the past');
+			isError = true;
+		}
+		
+		if (new Date(year, month, date).toDateString() === new Date(startDate).toDateString()) {
+			if (parseInt(startTime, 10) < now.getHours()) {
+				this.showInputError('startTime', 'Event cannot be started in the past');
+				isError = true;
+			}
 		}
 
 		if (startDate === endDate && startDate && endDate) {
 			if (parseInt(startTime, 10) > parseInt(endTime, 10)) {
-				errorMessages.push('End date cannot be lower then start date');
+				this.showInputError('endDate', 'End date cannot be lower then start date');
+				isError = true;
 			}
 			if (startTime === endTime) {
-				errorMessages.push('Event cannot starts and ends at the same time');
+				this.showInputError('endTime', 'Event cannot starts and ends at the same time');
+				isError = true;
 			}
 		}
 
 		if (!guestsElements.length) {
-			errorMessages.push('Please add at least one guest to event');
+			this.showInputError('guests', 'Please add at least one guest to event');
+			isError = true;
 		}
 
 		if (!location) {
-			errorMessages.push('Please provide event location');
+			this.showInputError('location', 'Please provide event location');
+			isError = true;
 		}
 
-		if (errorMessages.length) {
-			this.showFormErrors(errorMessages);
+		if (isError) {
 			return false;
 		}
-
-		this.hideFormErrors();
 
 		const guests = [];
 		for (let i = 0; i < guestsElements.length; i++) {
@@ -180,33 +287,53 @@ export default class CreateEvent extends Component {
 	}
 
 	render() {
+		const styleProgress = {
+			width: `${this.state.progressWidth}%`
+		};
+
 		return (
 			<div className="row">
+				<div className="progress">
+					<div className="determinate" style={styleProgress}></div>
+				</div>
 				<form onKeyPress={this.onFormKeyPress} ref={(eventForm) => { this.eventForm = eventForm; }} onSubmit={this.createEvent} className="col s12">
 					<h4 className="cols s3 center-align auth-header">Creation Of Event</h4>
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input ref={(nameInput) => { this.nameInput = nameInput; }} placeholder="Type event name here" id="name" type="text" />
+							<input onBlur={this.onBlurTextField} onInput={this.onInputTextField} ref={(nameInput) => { this.nameInput = nameInput; }} placeholder="Type event name here" id="name" type="text" autoFocus />
 							<label htmlFor="name" className="active">Event name</label>
+							<div ref={(nameError) => { this.nameError = nameError; }} className="error-msg"></div>
 						</div>
 					</div>
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input ref={(typeInput) => { this.typeInput = typeInput; }} placeholder="Type event type here" id="type" type="text" />
+							<input list="event-types" onBlur={this.onBlurTextField} onInput={this.onInputTextField} ref={(typeInput) => { this.typeInput = typeInput; }} placeholder="Type event type here" id="type" type="text" />
 							<label htmlFor="type" className="active">Event type (birthday, conference, wedding, etc.)</label>
+							<datalist id="event-types">
+								<option value="Birthday party" />
+								<option value="Conference talk" />
+								<option value="Friends meeting" />
+								<option value="Students party" />
+								<option value="Ney Year" />
+								<option value="Christmas" />
+								<option value="Wedding" />
+								<option value="Party" />
+							</datalist>
+							<div ref={(typeError) => { this.typeError = typeError; }} className="error-msg"></div>
 						</div>
 					</div>
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input ref={(hostInput) => { this.hostInput = hostInput; }} placeholder="Type host name here" id="host" type="text" />
+							<input onBlur={this.onBlurTextField} onInput={this.onInputTextField} ref={(hostInput) => { this.hostInput = hostInput; }} placeholder="Type host name here" id="host" type="text" />
 							<label htmlFor="host" className="active">Host (individual’s name or an organization)</label>
+							<div ref={(hostError) => { this.hostError = hostError; }} className="error-msg"></div>
 						</div>
 					</div>
 
-					<div className="row">
+					<div className="row no-margin-row">
 						<div className="input-field col s6 m3 l2 push-s0 push-m3 push-l4">
 							<input ref={(startDateInput) => { this.startDateInput = startDateInput; }} placeholder="Choose start date" id="start-date" className="datepicker" type="date" />
 							<label htmlFor="start-date" className="active">Event start date</label>
@@ -216,8 +343,15 @@ export default class CreateEvent extends Component {
 							<label htmlFor="start-time" className="active">Event start time</label>
 						</div>
 					</div>
-
 					<div className="row">
+						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4 no-margin-col">
+							<div ref={(startDateError) => { this.startDateError = startDateError; }} className="error-msg"></div>
+							<div ref={(startTimeError) => { this.startTimeError = startTimeError; }} className="error-msg"></div>
+						</div>
+					</div>
+					
+
+					<div className="row no-margin-row">
 						<div className="input-field col s6 m3 l2 push-s0 push-m3 push-l4">
 							<input ref={(endDateInput) => { this.endDateInput = endDateInput; }} placeholder="Choose end date" id="end-date" className="datepicker" type="date" />
 							<label htmlFor="end-date" className="active">Event end date</label>
@@ -227,11 +361,18 @@ export default class CreateEvent extends Component {
 							<label htmlFor="end-time" className="active">Event end time</label>
 						</div>
 					</div>
+					<div className="row">
+						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4 no-margin-col">
+							<div ref={(endDateError) => { this.endDateError = endDateError; }} className="error-msg"></div>
+							<div ref={(endTimeError) => { this.endTimeError = endTimeError; }} className="error-msg"></div>
+						</div>
+					</div>
 
 					<div className="row no-margin-row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onKeyPress={this.onKeyPressGuests} onBlur={this.onBlurGuests} onFocus={this.onFocusGuests} ref={(guestInput) => { this.guestInput = guestInput; }} placeholder="Separate guests by pressing ENTER" id="guest-list" type="text" />
-							<label htmlFor="guest-list" className="active">Guest list (press enter to add, click on guest to remove from list)</label>
+							<input onKeyPress={this.onKeyPressGuests} onBlur={this.onBlurGuests} onFocus={this.onFocusGuests} ref={(guestsInput) => { this.guestsInput = guestsInput; }} placeholder="Separate guests by pressing ENTER" id="guest-list" type="text" />
+							<label htmlFor="guest-list" className="active">Guest list (press enter to add guest, click on guest to remove from list)</label>
+							<div ref={(guestsError) => { this.guestsError = guestsError; }} className="error-msg"></div>
 						</div>
 					</div>
 
@@ -241,14 +382,16 @@ export default class CreateEvent extends Component {
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input ref={(locationInput) => { this.locationInput = locationInput; }} placeholder="Type the address of event" id="location" type="text" />
+							<input onBlur={this.onBlurTextField} onInput={this.onInputTextField} ref={(locationInput) => { this.locationInput = locationInput; }} placeholder="Type the address of event" id="location" type="text" />
 							<label htmlFor="location" className="active">Location</label>
+							<div ref={(locationError) => { this.locationError = locationError; }} className="error-msg"></div>
 						</div>
 					</div>
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
 							<textarea ref={(messageInput) => { this.messageInput = messageInput; }} id="message" className="materialize-textarea" placeholder="Which information do you want to add ?"></textarea>
 							<label htmlFor="message" className="active">Additional information about the event (optional)</label>
+							<div ref={(messageError) => { this.messageError = messageError; }} className="error-msg"></div>
 						</div>
 					</div>
 

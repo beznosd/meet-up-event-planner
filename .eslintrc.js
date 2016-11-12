@@ -9,6 +9,7 @@ module.exports = {
 		"no-unused-vars": "warn",
 		"no-undef": "warn",
 		"no-console": "off",
+		"no-param-reassign": "off",
 		"comma-dangle": "off",
 		"no-plusplus": "off",
 		"no-tabs": "off",
