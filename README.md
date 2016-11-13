@@ -1,5 +1,5 @@
 # meet-up-event-planner
-Project for Udacity nanodegree program: Senior Web Developer by Google
+Project for Udacity nanodegree program: Senior Web Developer by Google<br/>
 https://www.udacity.com/course/senior-web-developer-nanodegree-by-google--nd802
 
 Pretty simple event planner which includes creating and deleting of events, also login and signup.
