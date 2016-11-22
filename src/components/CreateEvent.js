@@ -181,8 +181,6 @@ export default class CreateEvent extends Component {
 	}
 
 	changePropgress(input, progressStep) {
-		const determinate = document.querySelector('.determinate');
-
 		if (input.value.length !== 0 && !input.progressChecked) {
 			this.setState({ progressWidth: this.state.progressWidth + progressStep });
 			input.progressChecked = true;

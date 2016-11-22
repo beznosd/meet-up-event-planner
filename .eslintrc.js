@@ -25,12 +25,14 @@ module.exports = {
 		"class-methods-use-this": "off",
 		"eol-last": "off",
 		"react/jsx-indent": [2, "tab"],
+		// "react/jsx-indent": "off",
 		"react/prefer-stateless-function": [0],
 		"react/jsx-indent-props": [2, "tab"],
 		"react/self-closing-comp": ["error", {
 		  "component": true,
 		  "html": false
 		}],
+		"react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
 		"react/forbid-prop-types": [0],
 		"jsx-a11y/no-static-element-interactions": [0]
 	}

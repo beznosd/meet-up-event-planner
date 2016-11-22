@@ -68,12 +68,6 @@ export default class SignUp extends Component {
 		}
 
 		this.hideInputError('pass');
-
-		// if (pass && pass.length > 8) {
-		// 	this.showInputError('pass', 'Password should be at least from 8 symbols');
-		// } else {
-		// 	this.hideInputError('pass');
-		// }
 	}
 
 	checkRepeatPass() {
