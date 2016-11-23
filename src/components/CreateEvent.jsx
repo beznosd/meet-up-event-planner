@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { Link, browserHistory } from 'react-router';
+import { connect } from 'react-redux';
 
-export default class CreateEvent extends Component {
+import { addEvent } from './../actions';
+
+class CreateEvent extends Component {
 	constructor(props) {
 		super(props);
 
@@ -306,36 +309,7 @@ export default class CreateEvent extends Component {
 			name, type, host, startDate, startTime, endDate, endTime, location, message, guests
 		};
 
-		// adding event
-
-		if (!localStorage.events) {
-			localStorage.events = JSON.stringify([]);
-		}
-
-		const events = JSON.parse(localStorage.events);
-		const currentUser = localStorage.currentUser;
-
-		let userIndex = null;
-		for (let i = 0; i < events.length; i++) {
-			if ({}.hasOwnProperty.call(events[i], currentUser)) {
-				userIndex = i;
-				break;
-			}
-		}
-
-		newEvent.id = (localStorage.eventIndex) ? +localStorage.eventIndex + 1 : 1;
-
-		if (userIndex === null) {
-			const obj = {};
-			obj[currentUser] = [];
-			obj[currentUser].push(newEvent);
-			events.push(obj);
-		} else {
-			events[userIndex][currentUser].push(newEvent);
-		}
-		
-		localStorage.setItem('events', JSON.stringify(events));
-		localStorage.setItem('eventIndex', newEvent.id);
+		this.props.addEvent(newEvent);
 
 		browserHistory.push('/events');
 	}
@@ -466,3 +440,5 @@ export default class CreateEvent extends Component {
 		);
 	}
 }
+
+export default connect(null, { addEvent })(CreateEvent);

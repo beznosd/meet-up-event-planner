@@ -12,6 +12,7 @@ module.exports = {
 		"no-param-reassign": "off",
 		"comma-dangle": "off",
 		"no-plusplus": "off",
+		"arrow-parens": 'off',
 		"no-tabs": "off",
 		"func-names": "off",
 		"max-len": "off",

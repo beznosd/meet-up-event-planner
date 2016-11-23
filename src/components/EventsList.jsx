@@ -1,35 +1,18 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
 import EventsListItem from './EventsListItem';
 
-export default class Event extends Component {
+class EventsList extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
-			eventsList: this.getEventList()
+			eventsList: this.props.events
 		};
 
 		this.removeEvent = this.removeEvent.bind(this);
-	}
-
-	getEventList() {
-		let events = [];
-		const currentUser = localStorage.currentUser;
-		if (localStorage.events) {
-			events = JSON.parse(localStorage.events);
-		}
-
-		let eventsList = [];
-		for (let i = 0; i < events.length; i++) {
-			if ({}.hasOwnProperty.call(events[i], currentUser)) {
-				eventsList = events[i][currentUser].reverse();
-				break;
-			}
-		}
-
-		return eventsList;
 	}
 
 	removeEvent(eventId) {
@@ -78,8 +61,8 @@ export default class Event extends Component {
 				<div className="app-content">
 					<h4 className="left-align">Your events list</h4>
 					<div className="event-list">
-						{ (this.state.eventsList.length) 
-							? this.state.eventsList.map(event => <EventsListItem key={event.id} removeEvent={() => this.removeEvent(event.id)} {...event} />) 
+						{ (this.props.events.length) 
+							? this.props.events.map(event => <EventsListItem key={event.id} removeEvent={() => this.removeEvent(event.id)} {...event} />) 
 							: 'You have not created any event yet.'
 						}
 					</div>
@@ -88,3 +71,11 @@ export default class Event extends Component {
 		);
 	}
 }
+
+const mapStateToProps = state => {
+	return {
+		events: state.events
+	};
+};
+
+export default connect(mapStateToProps)(EventsList);
