@@ -203,8 +203,7 @@ export default class CreateEvent extends Component {
 	}
 
 	createEvent(evt) {
-		evt.preventDefault();
-
+		
 		const name = this.nameInput.value.trim();
 		const type = this.typeInput.value.trim();
 		const host = this.hostInput.value.trim();
@@ -216,6 +215,7 @@ export default class CreateEvent extends Component {
 		const message = this.messageInput.value.trim();
 		const guestsElements = this.guestList.children;
 
+		evt.preventDefault();
 		let isError = false;
 
 		if (!name) {
@@ -355,7 +355,7 @@ export default class CreateEvent extends Component {
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onBlur={this.onBlurTextField} onInput={this.onInputTextField} ref={(nameInput) => { this.nameInput = nameInput; }} placeholder="Type event name here" id="name" type="text" autoFocus />
+							<input onBlur={this.onBlurTextField} onInput={this.onInputTextField} ref={(nameInput) => { this.nameInput = nameInput; }} name="name1" placeholder="Type event name here" id="name" type="text" autoFocus />
 							<label htmlFor="name" className="active">Event name</label>
 							<div ref={(nameError) => { this.nameError = nameError; }} className="error-msg"></div>
 						</div>
