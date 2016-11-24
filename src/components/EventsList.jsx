@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+
+import { fetchEvents } from './../actions';
 
 import EventsListItem from './EventsListItem';
 
@@ -8,6 +10,9 @@ class EventsList extends Component {
 	constructor(props) {
 		super(props);
 
+		this.props.fetchEvents();
+
+		// we need state to remove now
 		this.state = {
 			eventsList: this.props.events
 		};
@@ -72,10 +77,15 @@ class EventsList extends Component {
 	}
 }
 
+EventsList.propTypes = {
+	events: PropTypes.array,
+	fetchEvents: PropTypes.func
+};
+
 const mapStateToProps = state => {
 	return {
 		events: state.events
 	};
 };
 
-export default connect(mapStateToProps)(EventsList);
+export default connect(mapStateToProps, { fetchEvents })(EventsList);

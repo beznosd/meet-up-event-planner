@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Link, browserHistory } from 'react-router';
 import { connect } from 'react-redux';
 
@@ -440,5 +440,9 @@ class CreateEvent extends Component {
 		);
 	}
 }
+
+CreateEvent.propTypes = {
+	addEvent: PropTypes.func
+};
 
 export default connect(null, { addEvent })(CreateEvent);

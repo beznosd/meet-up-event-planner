@@ -1,6 +1,8 @@
+import { ADD_EVENT } from './../actions/types';
+
 export default ({ dispatch }) => {
 	return next => action => {
-		if (!action.payload || action.payload.id) {
+		if (action.type !== ADD_EVENT || !action.payload || action.payload.id) {
 			return next(action);
 		}
 
