@@ -11,6 +11,7 @@ export default class App extends Component {
 		const location = this.props.location.pathname;
 		const rout404 = this.props.routes[1].path === '*';
 
+		// if not authorized, redirect to signup
 		if (location !== '/login' && location !== '/signup' && location !== '/' && !rout404) {
 			if (!localStorage.currentUser) {
 				browserHistory.push('/signup');
