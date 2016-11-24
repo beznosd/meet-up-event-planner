@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 
-import { fetchEvents } from './../actions';
+import { fetchEvents, deleteEvent } from './../actions';
 
 import EventsListItem from './EventsListItem';
 
@@ -12,18 +12,13 @@ class EventsList extends Component {
 
 		this.props.fetchEvents();
 
-		// we need state to remove now
-		this.state = {
-			eventsList: this.props.events
-		};
-
 		this.removeEvent = this.removeEvent.bind(this);
 	}
 
 	removeEvent(eventId) {
 		// remove event
 
-		const eventsList = this.state.eventsList;
+		const eventsList = this.props.events;
 
 		let eventIndex = null;
 		for (let i = 0; i < eventsList.length; i++) {
@@ -34,9 +29,9 @@ class EventsList extends Component {
 		}
 		eventsList.splice(eventIndex, 1);
 		
-		// update state
+		// update state, fire action creator
 
-		this.setState({ eventsList });
+		this.props.deleteEvent(eventIndex);
 		
 		// update localStorage
 
@@ -79,7 +74,8 @@ class EventsList extends Component {
 
 EventsList.propTypes = {
 	events: PropTypes.array,
-	fetchEvents: PropTypes.func
+	fetchEvents: PropTypes.func,
+	deleteEvent: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -88,4 +84,4 @@ const mapStateToProps = state => {
 	};
 };
 
-export default connect(mapStateToProps, { fetchEvents })(EventsList);
+export default connect(mapStateToProps, { fetchEvents, deleteEvent })(EventsList);

@@ -10,6 +10,7 @@ module.exports = {
 		"no-undef": "warn",
 		"no-console": "off",
 		"no-param-reassign": "off",
+		"no-case-declarations": "off",
 		"comma-dangle": "off",
 		"no-plusplus": "off",
 		"arrow-parens": 'off',
