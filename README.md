@@ -22,7 +22,7 @@ Pretty simple event planner which includes creating and deleting of events, also
 3. [Materialize](http://materializecss.com/) (css framework based on Material Design)
 4. [Webpack](https://webpack.github.io/) (powerfull JS module bundler)
 5. [Babel](https://babeljs.io/) (JS compiler that allowed me to use ES6 features and JSX syntax)
-6. [es-lint](http://eslint.org/) (cool linting utility for JavaScript and JSX)
+6. [ESLint](http://eslint.org/) (cool linting utility for JavaScript and JSX)
 
 ## License
 [MIT](https://www.tldrlegal.com/l/mit) Copyright (c) 2016 Dima Beznos
