@@ -1,10 +1,14 @@
 module.exports = {
 	"extends": "airbnb",
-    "plugins": [
-        "react",
-        "jsx-a11y",
-        "import"
-    ],
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "import"
+  ],
+  "env": {
+  	"jquery": true,
+		"mocha": true
+  },
 	"rules": {
 		"no-unused-vars": "warn",
 		"no-undef": "warn",
