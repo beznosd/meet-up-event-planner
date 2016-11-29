@@ -16,8 +16,6 @@ class EventsList extends Component {
 	}
 
 	removeEvent(eventId) {
-		// remove event
-
 		const eventsList = this.props.events;
 
 		let eventIndex = null;
@@ -27,13 +25,14 @@ class EventsList extends Component {
 				break;
 			}
 		}
-		eventsList.splice(eventIndex, 1);
 		
 		// update state, fire action creator
 
 		this.props.deleteEvent(eventIndex);
 		
 		// update localStorage
+		
+		eventsList.splice(eventIndex, 1);
 
 		const events = JSON.parse(localStorage.events);
 		const currentUser = localStorage.currentUser;

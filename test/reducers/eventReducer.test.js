@@ -4,28 +4,28 @@ import eventReducer from './../../src/reducers/eventReducer';
 import { FETCH_EVENT } from './../../src/actions/types';
 
 describe('eventReducer', () => {
-	it('handles action with type FETCH_EVENT, ', () => {
+	it('FETCH_EVENT, ', () => {
 		const event = {
 			endDate: '26 November, 2016',
 			endTime: '20:00',
 			guests: ['Joseph', 'Samuel'],
 			host: 'Starbucks',
 			id: 1,
-			location: 'sldkf nlksdn',
-			message: 'skjhd fkjsn df',
-			name: 'New Event',
+			location: 'Phoenix, China avenue',
+			message: 'We will drink a coffee',
+			name: 'Coffee conference',
 			startDate: '26 November, 2016',
 			startTime: '19:00',
-			type: 'Friends meeting'
+			type: 'Conference'
 		};
-
-		const stateBefore = {};
-		const stateAfter = event;
 
 		const action = {
 			type: FETCH_EVENT,
 			payload: event
 		};
+
+		const stateBefore = {};
+		const stateAfter = event;
 
 		deepFreeze(stateBefore);
 		deepFreeze(action);
@@ -33,7 +33,7 @@ describe('eventReducer', () => {
 		expect(eventReducer(stateBefore, action)).to.equal(stateAfter);
 	});
 
-	it('handles action with unknown type', () => {
+	it('unknown type', () => {
 		const action = {
 			type: 'UKNOWN_ACTION',
 			payload: 'any value'

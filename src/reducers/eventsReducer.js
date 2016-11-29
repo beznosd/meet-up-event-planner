@@ -15,10 +15,9 @@ export default function(state = [], action) {
 
 	case DELETE_EVENT:
 		const eventIndex = action.payload;
-
 		return [
 			...state.slice(0, eventIndex),
-			...state.slice(eventIndex)
+			...state.slice(eventIndex + 1)
 		];
 
 	default:
