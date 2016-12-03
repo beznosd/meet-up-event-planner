@@ -15,12 +15,10 @@ class CreateEvent extends Component {
 
 		this.createEvent = this.createEvent.bind(this);
 		this.onFocusGuests = this.onFocusGuests.bind(this);
-		this.onBlurGuests = this.onBlurGuests.bind(this);
 		this.onKeyPressGuests = this.onKeyPressGuests.bind(this);
 		this.onFormKeyPress = this.onFormKeyPress.bind(this);
 		this.onClickGuestList = this.onClickGuestList.bind(this);
 		this.onInputTextField = this.onInputTextField.bind(this);
-		this.onBlurTextField = this.onBlurTextField.bind(this);
 	}
 
 	componentDidMount() {
@@ -143,13 +141,6 @@ class CreateEvent extends Component {
 		this.setState({ focusGuests: true });
 	}
 
-	onBlurGuests(evt) {
-		this.setState({ focusGuests: false });
-		if (!this.guestList.children.length) {
-			this.showInputError('guests', 'This field is required');
-		}
-	}
-
 	onKeyPressGuests(evt) {
 		const guestName = this.guestsInput.value;
 		if (evt.key === 'Enter' && guestName) {
@@ -159,12 +150,6 @@ class CreateEvent extends Component {
 			this.guestList.appendChild(el);
 			this.guestsInput.value = '';
 			this.hideInputError('guests');
-		}
-	}
-
-	onBlurTextField(evt) {
-		if (!evt.target.value.trim()) {
-			this.showInputError(evt.target.id, 'This fiels is required');
 		}
 	}
 
@@ -329,7 +314,7 @@ class CreateEvent extends Component {
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onBlur={this.onBlurTextField} onInput={this.onInputTextField} ref={(nameInput) => { this.nameInput = nameInput; }} name="name1" placeholder="Type event name here" id="name" type="text" autoFocus />
+							<input onInput={this.onInputTextField} ref={(nameInput) => { this.nameInput = nameInput; }} name="name1" placeholder="Type event name here" id="name" type="text" autoFocus />
 							<label htmlFor="name" className="active">Event name</label>
 							<div ref={(nameError) => { this.nameError = nameError; }} className="error-msg"></div>
 						</div>
@@ -337,13 +322,11 @@ class CreateEvent extends Component {
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input list="event-types" onBlur={this.onBlurTextField} onInput={this.onInputTextField} ref={(typeInput) => { this.typeInput = typeInput; }} placeholder="Type event type here" id="type" type="text" />
+							<input list="event-types" onInput={this.onInputTextField} ref={(typeInput) => { this.typeInput = typeInput; }} placeholder="Type event type here" id="type" type="text" />
 							<label htmlFor="type" className="active">Event type (birthday, conference, wedding, etc.)</label>
 							<datalist id="event-types">
-								<option value="Birthday party" />
 								<option value="Conference talk" />
 								<option value="Friends meeting" />
-								<option value="Students party" />
 								<option value="Ney Year" />
 								<option value="Christmas" />
 								<option value="Wedding" />
@@ -355,7 +338,7 @@ class CreateEvent extends Component {
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onBlur={this.onBlurTextField} onInput={this.onInputTextField} ref={(hostInput) => { this.hostInput = hostInput; }} placeholder="Type host name here" id="host" type="text" />
+							<input onInput={this.onInputTextField} ref={(hostInput) => { this.hostInput = hostInput; }} placeholder="Type host name here" id="host" type="text" />
 							<label htmlFor="host" className="active">Host (individual’s name or an organization)</label>
 							<div ref={(hostError) => { this.hostError = hostError; }} className="error-msg"></div>
 						</div>
@@ -398,7 +381,7 @@ class CreateEvent extends Component {
 
 					<div className="row no-margin-row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onKeyPress={this.onKeyPressGuests} onBlur={this.onBlurGuests} onFocus={this.onFocusGuests} ref={(guestsInput) => { this.guestsInput = guestsInput; }} placeholder="Separate guests by pressing ENTER" id="guest-list" type="text" />
+							<input onKeyPress={this.onKeyPressGuests} onFocus={this.onFocusGuests} ref={(guestsInput) => { this.guestsInput = guestsInput; }} placeholder="Separate guests by pressing ENTER" id="guest-list" type="text" />
 							<label htmlFor="guest-list" className="active">Guest list (press enter to add guest, click on guest to remove from list)</label>
 							<div ref={(guestsError) => { this.guestsError = guestsError; }} className="error-msg"></div>
 						</div>
@@ -410,7 +393,7 @@ class CreateEvent extends Component {
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onBlur={this.onBlurTextField} onInput={this.onInputTextField} ref={(locationInput) => { this.locationInput = locationInput; }} placeholder="Type the address of event" id="location" type="text" />
+							<input onInput={this.onInputTextField} ref={(locationInput) => { this.locationInput = locationInput; }} placeholder="Type the address of event" id="location" type="text" />
 							<label htmlFor="location" className="active">Location</label>
 							<div ref={(locationError) => { this.locationError = locationError; }} className="error-msg"></div>
 						</div>
