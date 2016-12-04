@@ -9,7 +9,9 @@ class CreateEventForm extends Component {
 
 		this.state = { 
 			event: {
-				name: ''
+				name: '',
+				host: '',
+				location: ''
 			},
 			errors: [],
 			focusGuests: false,
@@ -129,7 +131,7 @@ class CreateEventForm extends Component {
 		// });
 
 		// initialization of google address autocomplete
-		new google.maps.places.Autocomplete(this.locationInput);
+		new google.maps.places.Autocomplete(document.querySelector('input[id="location"]'));
 	}
 
 	onClickGuestList(evt) {
@@ -208,12 +210,14 @@ class CreateEventForm extends Component {
 		// const name = this.nameInput.value.trim();
 		const name = this.state.event.name;
 		const type = this.typeInput.value.trim();
-		const host = this.hostInput.value.trim();
+		// const host = this.hostInput.value.trim();
+		const host = this.state.event.host;
 		const startDate = this.startDateInput.value.trim();
 		const startTime = this.startTimeInput.value.trim();
 		const endDate = this.endDateInput.value.trim();
 		const endTime = this.endTimeInput.value.trim();
-		const location = this.locationInput.value.trim();
+		// const location = this.locationInput.value.trim();
+		const location = this.state.location;
 		const message = this.messageInput.value.trim();
 		const guestsElements = this.guestList.children;
 
@@ -223,7 +227,7 @@ class CreateEventForm extends Component {
 		// collect errors
 		if (!name) errors2.push({ type: 'name', msg: 'Please provide event name' });
 		if (!type) errors.push({ type: 'type', msg: 'Please provide event type' });
-		if (!host) errors.push({ type: 'host', msg: 'Please provide event host' });
+		if (!host) errors2.push({ type: 'host', msg: 'Please provide event host' });
 		if (!startDate) errors.push({ type: 'startDate', msg: 'Please choose start date of event' });
 		if (!startTime) errors.push({ type: 'startTime', msg: 'Please choose start time of event' });
 		if (!endDate) errors.push({ type: 'endDate', msg: 'Please choose end date of event' });
@@ -254,7 +258,7 @@ class CreateEventForm extends Component {
 		}
 
 		if (!guestsElements.length)	errors.push({ type: 'guests', msg: 'Please add at least one guest to event' });
-		if (!location) errors.push({ type: 'location', msg: 'Please provide event location' });
+		if (!location) errors2.push({ type: 'location', msg: 'Please provide event location' });
 
 		if (errors.length > 0) {
 			errors.forEach((error) => {
@@ -288,6 +292,7 @@ class CreateEventForm extends Component {
 	hideFieldError(fieldType) {
 		if (this.state.errors.findIndex(error => error.type === fieldType) > -1) {
 			const errors = this.state.errors.filter(error => error.type !== fieldType);
+			console.log(errors);
 			this.setState({ errors });
 		}
 	}
@@ -318,20 +323,12 @@ class CreateEventForm extends Component {
 					<TextField 
 						onChangeTextField={this.onChangeTextField}
 						value={this.state.event.name}
-						placeholder="Example type event name here"
+						placeholder="Type event name here"
 						label="Event name"
 						id="name"
 						errors={this.state.errors}
 						autofocus
 					/>
-
-					{/* <div className="row">
-						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onInput={this.onInputTextField} ref={(nameInput) => { this.nameInput = nameInput; }} placeholder="Type event name here" id="name" type="text" autoFocus />
-							<label htmlFor="name" className="active">Event name</label>
-							<div ref={(nameError) => { this.nameError = nameError; }} className="error-msg"></div>
-						</div>
-					</div> */}
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
@@ -349,13 +346,14 @@ class CreateEventForm extends Component {
 						</div>
 					</div>
 
-					<div className="row">
-						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onInput={this.onInputTextField} ref={(hostInput) => { this.hostInput = hostInput; }} placeholder="Type host name here" id="host" type="text" />
-							<label htmlFor="host" className="active">Host (individual’s name or an organization)</label>
-							<div ref={(hostError) => { this.hostError = hostError; }} className="error-msg"></div>
-						</div>
-					</div>
+					<TextField 
+						onChangeTextField={this.onChangeTextField}
+						value={this.state.event.host}
+						placeholder="Type host name here"
+						label="Host (individual’s name or an organization)"
+						id="host"
+						errors={this.state.errors}
+					/>
 
 					<div className="row no-margin-row">
 						<div className="input-field col s6 m3 l2 push-s0 push-m3 push-l4">
@@ -404,13 +402,15 @@ class CreateEventForm extends Component {
 						<div onClick={this.onClickGuestList} ref={(guestList) => { this.guestList = guestList; }} className="input-field col s12 m6 l4 push-s0 push-m3 push-l4"></div>
 					</div>
 
-					<div className="row">
-						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onInput={this.onInputTextField} ref={(locationInput) => { this.locationInput = locationInput; }} placeholder="Type the address of event" id="location" type="text" />
-							<label htmlFor="location" className="active">Location</label>
-							<div ref={(locationError) => { this.locationError = locationError; }} className="error-msg"></div>
-						</div>
-					</div>
+					<TextField 
+						onChangeTextField={this.onChangeTextField}
+						value={this.state.event.location}
+						placeholder="Type the address of event"
+						label="Location"
+						id="location"
+						errors={this.state.errors}
+					/>
+
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
 							<textarea ref={(messageInput) => { this.messageInput = messageInput; }} id="message" className="materialize-textarea" placeholder="Which information do you want to add ?"></textarea>
