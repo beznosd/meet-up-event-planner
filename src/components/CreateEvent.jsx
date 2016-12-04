@@ -191,7 +191,6 @@ class CreateEvent extends Component {
 	}
 
 	createEvent(evt) {
-		
 		const name = this.nameInput.value.trim();
 		const type = this.typeInput.value.trim();
 		const host = this.hostInput.value.trim();
@@ -204,84 +203,49 @@ class CreateEvent extends Component {
 		const guestsElements = this.guestList.children;
 
 		evt.preventDefault();
-		let isError = false;
+		let errors = [];
 
-		if (!name) {
-			this.showInputError('name', 'Please provide event name');
-			isError = true;
-		}
-
-		if (!type) {
-			this.showInputError('type', 'Please provide event type');
-			isError = true;
-		}
-
-		if (!host) {
-			this.showInputError('host', 'Please provide event host');
-			isError = true;
-		}
-
-		if (!startDate) {
-			this.showInputError('startDate', 'Please choose start date of event');
-			isError = true;
-		}
-
-		if (!startTime) {
-			this.showInputError('startTime', 'Please choose start time of event');
-			isError = true;
-		}
-
-		if (!endDate) {
-			this.showInputError('endDate', 'Please choose end date of event');
-			isError = true;
-		}
-
-		if (!endTime) {
-			this.showInputError('endTime', 'Please choose end time of event');
-			isError = true;
-		}
+		// collect errors
+		if (!name) errors.push({ type: 'name', msg: 'Please provide event name' });
+		if (!type) errors.push({ type: 'type', msg: 'Please provide event type' });
+		if (!host) errors.push({ type: 'host', msg: 'Please provide event host' });
+		if (!startDate) errors.push({ type: 'startDate', msg: 'Please choose start date of event' });
+		if (!startTime) errors.push({ type: 'startTime', msg: 'Please choose start time of event' });
+		if (!endDate) errors.push({ type: 'endDate', msg: 'Please choose end date of event' });
+		if (!endTime) errors.push({ type: 'endTime', msg: 'Please choose end time of event' });
 
 		if (new Date(startDate) > new Date(endDate)) {
-			this.showInputError('endDate', 'End date cannot be lower then start date');
-			isError = true;
+			errors.push({ type: 'endDate', msg: 'End date cannot be lower then start date' });
 		}
 
 		const date = this.getDateObject();
-
 		if (new Date(date.year, date.month, date.day) > new Date(startDate)) {
-			this.showInputError('startDate', 'Event cannot be started in the past');
-			isError = true;
+			errors.push({ type: 'startDate', msg: 'Event cannot be started in the past' });
 		}
-		
+
 		if (new Date(date.year, date.month, date.day).toDateString() === new Date(startDate).toDateString()) {
 			if (parseInt(startTime, 10) < new Date().getHours()) {
-				this.showInputError('startTime', 'Event cannot be started in the past');
-				isError = true;
+				errors.push({ type: 'startTime', msg: 'Event cannot be started in the past' });
 			}
 		}
 
 		if (startDate === endDate && startDate && endDate) {
 			if (parseInt(startTime, 10) > parseInt(endTime, 10)) {
-				this.showInputError('endDate', 'End date cannot be lower then start date');
-				isError = true;
+				errors.push({ type: 'endDate', msg: 'End date cannot be lower then start date' });
 			}
 			if (startTime === endTime) {
-				this.showInputError('endTime', 'Event cannot starts and ends at the same time');
-				isError = true;
+				errors.push({ type: 'endTime', msg: 'Event cannot starts and ends at the same time' });
 			}
 		}
 
-		if (!guestsElements.length) {
-			this.showInputError('guests', 'Please add at least one guest to event');
-			isError = true;
-		}
+		if (!guestsElements.length)	errors.push({ type: 'guests', msg: 'Please add at least one guest to event' });
+		if (!location) errors.push({ type: 'location', msg: 'Please provide event location' });
 
-		if (!location) {
-			this.showInputError('location', 'Please provide event location');
-			isError = true;
-		}
-
-		if (isError) {
+		if (errors.length > 0) {
+			errors.forEach((error) => {
+				this.showInputError(error.type, error.msg);
+			});
+			errors = [];
 			return false;
 		}
 

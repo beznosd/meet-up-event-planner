@@ -32,8 +32,6 @@ export const fetchEvent = (eventId) => {
 		}
 	}
 
-	console.log(event);
-
 	return {
 		type: FETCH_EVENT,
 		payload: event
