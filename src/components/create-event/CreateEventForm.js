@@ -1,11 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 
+import TextField from './TextField';
+
 class CreateEventForm extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = { 
+			event: {
+				name: ''
+			},
+			errors: [],
 			focusGuests: false,
 			progressWidth: 0
 		};
@@ -16,6 +22,7 @@ class CreateEventForm extends Component {
 		this.onKeyPressGuests = this.onKeyPressGuests.bind(this);
 		this.onFormKeyPress = this.onFormKeyPress.bind(this);
 		this.onClickGuestList = this.onClickGuestList.bind(this);
+		this.onChangeTextField = this.onChangeTextField.bind(this);
 		this.onInputTextField = this.onInputTextField.bind(this);
 	}
 
@@ -110,16 +117,16 @@ class CreateEventForm extends Component {
 		const progressStep = 100 / 10;
 
 		// improve with bubbling, one callback to the form
-		[].forEach.call(this.eventForm, (input) => {
-			if (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA') {
-				input.oninput = () => {
-					this.changePropgress(input, progressStep);
-				};
-				input.onchange = () => {
-					this.changePropgress(input, progressStep);
-				};
-			}
-		});
+		// [].forEach.call(this.eventForm, (input) => {
+		// 	if (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA') {
+		// 		input.oninput = () => {
+		// 			this.changePropgress(input, progressStep);
+		// 		};
+		// 		input.onchange = () => {
+		// 			this.changePropgress(input, progressStep);
+		// 		};
+		// 	}
+		// });
 
 		// initialization of google address autocomplete
 		new google.maps.places.Autocomplete(this.locationInput);
@@ -198,7 +205,8 @@ class CreateEventForm extends Component {
 	onSubmitForm(evt) {
 		evt.preventDefault();
 
-		const name = this.nameInput.value.trim();
+		// const name = this.nameInput.value.trim();
+		const name = this.state.event.name;
 		const type = this.typeInput.value.trim();
 		const host = this.hostInput.value.trim();
 		const startDate = this.startDateInput.value.trim();
@@ -210,9 +218,10 @@ class CreateEventForm extends Component {
 		const guestsElements = this.guestList.children;
 
 		let errors = [];
+		let errors2 = [];
 
 		// collect errors
-		if (!name) errors.push({ type: 'name', msg: 'Please provide event name' });
+		if (!name) errors2.push({ type: 'name', msg: 'Please provide event name' });
 		if (!type) errors.push({ type: 'type', msg: 'Please provide event type' });
 		if (!host) errors.push({ type: 'host', msg: 'Please provide event host' });
 		if (!startDate) errors.push({ type: 'startDate', msg: 'Please choose start date of event' });
@@ -255,6 +264,15 @@ class CreateEventForm extends Component {
 			// return false;
 		}
 
+		if (errors2.length > 0) {
+			// errors2.forEach((error) => {
+			// 	this.showInputError2(error.type, error.msg);
+			// });
+			// errors = [];
+			this.setState({ errors: errors2 });
+			// return false;
+		}
+
 		const guests = [];
 		for (let i = 0; i < guestsElements.length; i++) {
 			guests.push(guestsElements[i].firstElementChild.textContent);
@@ -266,6 +284,24 @@ class CreateEventForm extends Component {
 
 		this.props.createEvent(newEvent);
 	}
+
+	hideFieldError(fieldType) {
+		if (this.state.errors.findIndex(error => error.type === fieldType) > -1) {
+			const errors = this.state.errors.filter(error => error.type !== fieldType);
+			this.setState({ errors });
+		}
+	}
+
+	onChangeTextField(evt) {
+		const fieldType = evt.target.id;
+
+		this.hideFieldError(fieldType);
+
+		const event = this.state.event;
+		event[fieldType] = evt.target.value;
+		this.setState({ event });
+	}
+
 
 	render() {
 		const progressStyles = {
@@ -279,13 +315,23 @@ class CreateEventForm extends Component {
 				<form onKeyPress={this.onFormKeyPress} ref={(eventForm) => { this.eventForm = eventForm; }} onSubmit={this.onSubmitForm} className="col s12">
 					<h4 className="cols s3 center-align auth-header">Creation Of Event</h4>
 
-					<div className="row">
+					<TextField 
+						onChangeTextField={this.onChangeTextField}
+						value={this.state.event.name}
+						placeholder="Example type event name here"
+						label="Event name"
+						id="name"
+						errors={this.state.errors}
+						autofocus
+					/>
+
+					{/* <div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onInput={this.onInputTextField} ref={(nameInput) => { this.nameInput = nameInput; }} name="name1" placeholder="Type event name here" id="name" type="text" autoFocus />
+							<input onInput={this.onInputTextField} ref={(nameInput) => { this.nameInput = nameInput; }} placeholder="Type event name here" id="name" type="text" autoFocus />
 							<label htmlFor="name" className="active">Event name</label>
 							<div ref={(nameError) => { this.nameError = nameError; }} className="error-msg"></div>
 						</div>
-					</div>
+					</div> */}
 
 					<div className="row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">

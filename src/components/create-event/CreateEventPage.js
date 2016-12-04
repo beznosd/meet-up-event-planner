@@ -13,7 +13,7 @@ class CreateEvent extends Component {
 	}
 
 	createEvent(newEvent) {
-		console.log(newEvent);
+		// console.log(newEvent);
 		return;
 		this.props.addEvent(newEvent);
 		browserHistory.push('/events');
