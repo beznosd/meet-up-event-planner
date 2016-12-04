@@ -11,7 +11,8 @@ class CreateEventForm extends Component {
 			event: {
 				name: '',
 				host: '',
-				location: ''
+				location: '',
+				type: ''
 			},
 			errors: [],
 			focusGuests: false,
@@ -209,7 +210,8 @@ class CreateEventForm extends Component {
 
 		// const name = this.nameInput.value.trim();
 		const name = this.state.event.name;
-		const type = this.typeInput.value.trim();
+		// const type = this.typeInput.value.trim();
+		const type = this.state.event.type;
 		// const host = this.hostInput.value.trim();
 		const host = this.state.event.host;
 		const startDate = this.startDateInput.value.trim();
@@ -222,11 +224,11 @@ class CreateEventForm extends Component {
 		const guestsElements = this.guestList.children;
 
 		let errors = [];
-		let errors2 = [];
+		const errors2 = [];
 
 		// collect errors
 		if (!name) errors2.push({ type: 'name', msg: 'Please provide event name' });
-		if (!type) errors.push({ type: 'type', msg: 'Please provide event type' });
+		if (!type) errors2.push({ type: 'type', msg: 'Please provide event type' });
 		if (!host) errors2.push({ type: 'host', msg: 'Please provide event host' });
 		if (!startDate) errors.push({ type: 'startDate', msg: 'Please choose start date of event' });
 		if (!startTime) errors.push({ type: 'startTime', msg: 'Please choose start time of event' });
@@ -292,7 +294,6 @@ class CreateEventForm extends Component {
 	hideFieldError(fieldType) {
 		if (this.state.errors.findIndex(error => error.type === fieldType) > -1) {
 			const errors = this.state.errors.filter(error => error.type !== fieldType);
-			console.log(errors);
 			this.setState({ errors });
 		}
 	}
@@ -330,22 +331,16 @@ class CreateEventForm extends Component {
 						autofocus
 					/>
 
-					<div className="row">
-						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input list="event-types" onInput={this.onInputTextField} ref={(typeInput) => { this.typeInput = typeInput; }} placeholder="Type event type here" id="type" type="text" />
-							<label htmlFor="type" className="active">Event type (birthday, conference, wedding, etc.)</label>
-							<datalist id="event-types">
-								<option value="Conference talk" />
-								<option value="Friends meeting" />
-								<option value="Ney Year" />
-								<option value="Christmas" />
-								<option value="Wedding" />
-								<option value="Party" />
-							</datalist>
-							<div ref={(typeError) => { this.typeError = typeError; }} className="error-msg"></div>
-						</div>
-					</div>
-
+					<TextField 
+						onChangeTextField={this.onChangeTextField}
+						value={this.state.event.type}
+						placeholder="Type event type here"
+						label="Event type (birthday, conference, wedding, etc.)"
+						id="type"
+						errors={this.state.errors}
+						listId="event-types"
+					/>
+					
 					<TextField 
 						onChangeTextField={this.onChangeTextField}
 						value={this.state.event.host}
