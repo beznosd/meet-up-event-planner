@@ -267,17 +267,15 @@ class CreateEventForm extends Component {
 				this.showInputError(error.type, error.msg);
 			});
 			errors = [];
-			// return false;
 		}
 
 		if (errors2.length > 0) {
-			// errors2.forEach((error) => {
-			// 	this.showInputError2(error.type, error.msg);
-			// });
-			// errors = [];
 			this.setState({ errors: errors2 });
 			// return false;
 		}
+
+		console.log('adding event ...');
+		return false;
 
 		const guests = [];
 		for (let i = 0; i < guestsElements.length; i++) {

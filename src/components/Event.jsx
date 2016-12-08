@@ -22,12 +22,12 @@ class Event extends Component {
 				<h4 className="center-align">&bull; {event.name} &bull;</h4>
 				<p><b>Host:</b> {event.host}</p>
 				<p><b>Event type:</b> {event.type}</p>
-				<p><b>Guests:</b></p>
+				<p><b>List of guests:</b></p>
 				<div>
 					{event.guests.map((guest, i) => <div key={i}>{guest}</div>)}
 				</div>
-				<p><b>Starts</b> {event.startDate} at {event.startTime}</p>
-				<p><b>Ends</b> {event.endDate} at {event.endTime}</p>
+				<p><b>Starts:</b> {event.startDate} at {event.startTime}</p>
+				<p><b>Ends:</b> {event.endDate} at {event.endTime}</p>
 				<p><b>Location:</b> {event.location}</p>
 				<p><b>Additional Information:</b> {(event.message) ? event.message : 'no aditional info in this event'}</p>
 			</div>
