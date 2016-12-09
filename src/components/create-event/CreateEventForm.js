@@ -208,17 +208,13 @@ class CreateEventForm extends Component {
 	onSubmitForm(evt) {
 		evt.preventDefault();
 
-		// const name = this.nameInput.value.trim();
 		const name = this.state.event.name;
-		// const type = this.typeInput.value.trim();
 		const type = this.state.event.type;
-		// const host = this.hostInput.value.trim();
 		const host = this.state.event.host;
 		const startDate = this.startDateInput.value.trim();
 		const startTime = this.startTimeInput.value.trim();
 		const endDate = this.endDateInput.value.trim();
 		const endTime = this.endTimeInput.value.trim();
-		// const location = this.locationInput.value.trim();
 		const location = this.state.location;
 		const message = this.messageInput.value.trim();
 		const guestsElements = this.guestList.children;
@@ -320,27 +316,27 @@ class CreateEventForm extends Component {
 					<h4 className="cols s3 center-align auth-header">Creation Of Event</h4>
 
 					<TextField 
-						onChangeTextField={this.onChangeTextField}
+						onChange={this.onChangeTextField}
 						value={this.state.event.name}
 						placeholder="Type event name here"
 						label="Event name"
 						id="name"
 						errors={this.state.errors}
-						autofocus
+						autoFocus
 					/>
 
 					<TextField 
-						onChangeTextField={this.onChangeTextField}
+						onChange={this.onChangeTextField}
 						value={this.state.event.type}
 						placeholder="Type event type here"
 						label="Event type (birthday, conference, wedding, etc.)"
 						id="type"
 						errors={this.state.errors}
-						listId="event-types"
+						list="event-types"
 					/>
 					
 					<TextField 
-						onChangeTextField={this.onChangeTextField}
+						onChange={this.onChangeTextField}
 						value={this.state.event.host}
 						placeholder="Type host name here"
 						label="Host (individual’s name or an organization)"
@@ -396,7 +392,7 @@ class CreateEventForm extends Component {
 					</div>
 
 					<TextField 
-						onChangeTextField={this.onChangeTextField}
+						onChange={this.onChangeTextField}
 						value={this.state.event.location}
 						placeholder="Type the address of event"
 						label="Location"
