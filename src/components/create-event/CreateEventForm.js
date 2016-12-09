@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 
 import TextField from './TextField';
+import DateTimeFields from './DateTimeFields';
 
 class CreateEventForm extends Component {
 	constructor(props) {
@@ -12,7 +13,11 @@ class CreateEventForm extends Component {
 				name: '',
 				host: '',
 				location: '',
-				type: ''
+				type: '',
+				startDate: '',
+				startTime: '',
+				endDate: '',
+				endTime: ''
 			},
 			errors: [],
 			focusGuests: false,
@@ -27,85 +32,10 @@ class CreateEventForm extends Component {
 		this.onClickGuestList = this.onClickGuestList.bind(this);
 		this.onChangeTextField = this.onChangeTextField.bind(this);
 		this.onInputTextField = this.onInputTextField.bind(this);
+		this.onChangeDateField = this.onChangeDateField.bind(this);
 	}
 
 	componentDidMount() {
-		// initialization of pickadate
-
-		$(this.startDateInput).pickadate({
-			onSet: () => {
-				this.hideInputError('startDate');
-				this.hideInputError('startTime');
-				const startDate = this.startDateInput.value.trim();
-				const startTime = this.startTimeInput.value.trim();
-				const date = this.getDateObject();
-				if (new Date(date.year, date.month, date.day) > new Date(startDate)) {
-					this.showInputError('startDate', 'Event cannot be started in the past');
-					if (startTime && parseInt(startTime, 10) < new Date().getHours()) {
-						this.showInputError('startTime', 'Event cannot be started in the past');
-					}
-				}
-				if (new Date(date.year, date.month, date.day).toDateString() === new Date(startDate).toDateString()) {
-					if (startTime && parseInt(startTime, 10) < new Date().getHours()) {
-						this.showInputError('startTime', 'Event cannot be started in the past');
-					}
-				}
-			}
-		});
-
-		$(this.endDateInput).pickadate({
-			onSet: () => {
-				this.hideInputError('endDate');
-				this.hideInputError('endTime');
-				const endDate = this.endDateInput.value.trim();
-				const endTime = this.endTimeInput.value.trim();
-				const date = this.getDateObject();
-				if (new Date(date.year, date.month, date.day) > new Date(endDate)) {
-					this.showInputError('endDate', 'Event cannot be finished in the past');
-				}
-				if (new Date(date.year, date.month, date.day).toDateString() === new Date(endDate).toDateString()) {
-					if (endTime && parseInt(endTime, 10) < new Date().getHours()) {
-						this.showInputError('endTime', 'Event cannot be finished in the past');
-					}
-				}
-			}
-		});
-
-		$(this.startTimeInput).pickatime({
-			format: 'H:i',
-			interval: 60,
-			onSet: () => {
-				this.hideInputError('startTime');
-				const startDate = this.startDateInput.value.trim();
-				const startTime = this.startTimeInput.value.trim();
-				const date = this.getDateObject();
-				if (new Date(date.year, date.month, date.day).toDateString() === new Date(startDate).toDateString()) {
-					if (parseInt(startTime, 10) < new Date().getHours()) {
-						this.showInputError('startTime', 'Event cannot be started in the past');
-					}
-				}
-			}
-		});
-
-		$(this.endTimeInput).pickatime({
-			format: 'H:i',
-			interval: 60,
-			onSet: () => {
-				this.hideInputError('endTime');
-				const startDate = this.startDateInput.value.trim();
-				const endDate = this.endDateInput.value.trim();
-				const startTime = this.startTimeInput.value.trim();
-				const endTime = this.endTimeInput.value.trim();
-				if (startDate === endDate && startDate && endDate) {
-					if (parseInt(startTime, 10) > parseInt(endTime, 10)) {
-						this.showInputError('endTime', 'End date cannot be lower then start date');
-					}
-					if (startTime === endTime) {
-						this.showInputError('endTime', 'Event cannot starts and ends at the same time');
-					}
-				}
-			}
-		});
 
 		// Initialization of top progress
 
@@ -174,15 +104,6 @@ class CreateEventForm extends Component {
 		}
 	}
 
-	getDateObject() {
-		const now = new Date();
-		return {
-			year: now.getFullYear(),
-			month: now.getMonth(),
-			day: now.getDate()
-		};
-	}
-
 	changePropgress(input, progressStep) {
 		if (input.value.length !== 0 && !input.progressChecked) {
 			this.setState({ progressWidth: this.state.progressWidth + progressStep });
@@ -205,17 +126,26 @@ class CreateEventForm extends Component {
 		this[`${inputType}Input`].classList.remove('invalid');
 	}
 
+	getDateObject() {
+		const now = new Date();
+		return {
+			year: now.getFullYear(),
+			month: now.getMonth(),
+			day: now.getDate()
+		};
+	}
+
 	onSubmitForm(evt) {
 		evt.preventDefault();
 
 		const name = this.state.event.name;
 		const type = this.state.event.type;
 		const host = this.state.event.host;
-		const startDate = this.startDateInput.value.trim();
-		const startTime = this.startTimeInput.value.trim();
-		const endDate = this.endDateInput.value.trim();
-		const endTime = this.endTimeInput.value.trim();
-		const location = this.state.location;
+		const startDate = this.state.event.startDate;
+		const startTime = this.state.event.startTime;
+		const endDate = this.state.event.endDate;
+		const endTime = this.state.event.endTime;
+		const location = this.state.event.location;
 		const message = this.messageInput.value.trim();
 		const guestsElements = this.guestList.children;
 
@@ -226,32 +156,32 @@ class CreateEventForm extends Component {
 		if (!name) errors2.push({ type: 'name', msg: 'Please provide event name' });
 		if (!type) errors2.push({ type: 'type', msg: 'Please provide event type' });
 		if (!host) errors2.push({ type: 'host', msg: 'Please provide event host' });
-		if (!startDate) errors.push({ type: 'startDate', msg: 'Please choose start date of event' });
-		if (!startTime) errors.push({ type: 'startTime', msg: 'Please choose start time of event' });
-		if (!endDate) errors.push({ type: 'endDate', msg: 'Please choose end date of event' });
-		if (!endTime) errors.push({ type: 'endTime', msg: 'Please choose end time of event' });
+		if (!startDate) errors2.push({ type: 'startDate', msg: 'Please choose start date of event' });
+		if (!startTime) errors2.push({ type: 'startTime', msg: 'Please choose start time of event' });
+		if (!endDate) errors2.push({ type: 'endDate', msg: 'Please choose end date of event' });
+		if (!endTime) errors2.push({ type: 'endTime', msg: 'Please choose end time of event' });
 
 		if (new Date(startDate) > new Date(endDate)) {
-			errors.push({ type: 'endDate', msg: 'End date cannot be lower then start date' });
+			errors2.push({ type: 'endDate', msg: 'End date cannot be lower then start date' });
 		}
 
 		const date = this.getDateObject();
 		if (new Date(date.year, date.month, date.day) > new Date(startDate)) {
-			errors.push({ type: 'startDate', msg: 'Event cannot be started in the past' });
+			errors2.push({ type: 'startDate', msg: 'Event cannot be started in the past' });
 		}
 
 		if (new Date(date.year, date.month, date.day).toDateString() === new Date(startDate).toDateString()) {
 			if (parseInt(startTime, 10) < new Date().getHours()) {
-				errors.push({ type: 'startTime', msg: 'Event cannot be started in the past' });
+				errors2.push({ type: 'startTime', msg: 'Event cannot be started in the past' });
 			}
 		}
 
 		if (startDate === endDate && startDate && endDate) {
 			if (parseInt(startTime, 10) > parseInt(endTime, 10)) {
-				errors.push({ type: 'endDate', msg: 'End date cannot be lower then start date' });
+				errors2.push({ type: 'endDate', msg: 'End date cannot be lower then start date' });
 			}
 			if (startTime === endTime) {
-				errors.push({ type: 'endTime', msg: 'Event cannot starts and ends at the same time' });
+				errors2.push({ type: 'endTime', msg: 'Event cannot starts and ends at the same time' });
 			}
 		}
 
@@ -270,8 +200,8 @@ class CreateEventForm extends Component {
 			// return false;
 		}
 
-		console.log('adding event ...');
-		return false;
+		// console.log('adding event ...');
+		// return false;
 
 		const guests = [];
 		for (let i = 0; i < guestsElements.length; i++) {
@@ -293,12 +223,18 @@ class CreateEventForm extends Component {
 	}
 
 	onChangeTextField(evt) {
-		const fieldType = evt.target.id;
-
-		this.hideFieldError(fieldType);
+		this.hideFieldError(evt.target.id);
 
 		const event = this.state.event;
-		event[fieldType] = evt.target.value;
+		event[evt.target.id] = evt.target.value;
+
+		this.setState({ event });
+	}
+
+	onChangeDateField(type, value) {
+		const event = this.state.event;
+		event[type] = value;
+
 		this.setState({ event });
 	}
 
@@ -344,40 +280,7 @@ class CreateEventForm extends Component {
 						errors={this.state.errors}
 					/>
 
-					<div className="row no-margin-row">
-						<div className="input-field col s6 m3 l2 push-s0 push-m3 push-l4">
-							<input ref={(startDateInput) => { this.startDateInput = startDateInput; }} placeholder="Choose start date" id="start-date" className="datepicker" type="date" />
-							<label htmlFor="start-date" className="active">Event start date</label>
-						</div>
-						<div className="input-field col s6 m3 l2 push-s0 push-m3 push-l4">
-							<input ref={(startTimeInput) => { this.startTimeInput = startTimeInput; }} placeholder="Choose start time" id="start-time" className="timepicker" type="time" />
-							<label htmlFor="start-time" className="active">Event start time</label>
-						</div>
-					</div>
-					<div className="row">
-						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4 no-margin-col">
-							<div ref={(startDateError) => { this.startDateError = startDateError; }} className="error-msg"></div>
-							<div ref={(startTimeError) => { this.startTimeError = startTimeError; }} className="error-msg"></div>
-						</div>
-					</div>
-					
-
-					<div className="row no-margin-row">
-						<div className="input-field col s6 m3 l2 push-s0 push-m3 push-l4">
-							<input ref={(endDateInput) => { this.endDateInput = endDateInput; }} placeholder="Choose end date" id="end-date" className="datepicker" type="date" />
-							<label htmlFor="end-date" className="active">Event end date</label>
-						</div>
-						<div className="input-field col s6 m3 l2 push-s0 push-m3 push-l4">
-							<input ref={(endTimeInput) => { this.endTimeInput = endTimeInput; }} placeholder="Choose end time" id="end-time" className="timepicker" type="time" />
-							<label htmlFor="end-time" className="active">Event end time</label>
-						</div>
-					</div>
-					<div className="row">
-						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4 no-margin-col">
-							<div ref={(endDateError) => { this.endDateError = endDateError; }} className="error-msg"></div>
-							<div ref={(endTimeError) => { this.endTimeError = endTimeError; }} className="error-msg"></div>
-						</div>
-					</div>
+					<DateTimeFields errors={this.state.errors} onChange={this.onChangeDateField} />
 
 					<div className="row no-margin-row">
 						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
