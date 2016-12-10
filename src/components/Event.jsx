@@ -29,7 +29,7 @@ class Event extends Component {
 				<p><b>Starts:</b> {event.startDate} at {event.startTime}</p>
 				<p><b>Ends:</b> {event.endDate} at {event.endTime}</p>
 				<p><b>Location:</b> {event.location}</p>
-				<p><b>Additional Information:</b> {(event.message) ? event.message : 'no aditional info in this event'}</p>
+				<p><b>Additional Information:</b> {(event.message) ? event.message : 'no aditional info for this event'}</p>
 			</div>
 		);
 	}

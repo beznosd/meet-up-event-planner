@@ -9,7 +9,7 @@ export default class DateTimeField extends Component {
 			onSet: () => {
 				const startDate = this.startDateInput.value.trim();
 				const startTime = this.startTimeInput.value.trim();
-				const date = this.getDateObject();
+				const date = this.props.getDateObject();
 
 				this.props.onChange('startDate', startDate);
 
@@ -34,7 +34,7 @@ export default class DateTimeField extends Component {
 			onSet: () => {
 				const endDate = this.endDateInput.value.trim();
 				const endTime = this.endTimeInput.value.trim();
-				const date = this.getDateObject();
+				const date = this.props.getDateObject();
 				
 				this.props.onChange('endDate', endDate);
 				
@@ -58,7 +58,7 @@ export default class DateTimeField extends Component {
 			onSet: () => {
 				const startDate = this.startDateInput.value.trim();
 				const startTime = this.startTimeInput.value.trim();
-				const date = this.getDateObject();
+				const date = this.props.getDateObject();
 				
 				this.props.onChange('startTime', startTime);
 
@@ -95,15 +95,6 @@ export default class DateTimeField extends Component {
 				}
 			}
 		});
-	}
-
-	getDateObject() {
-		const now = new Date();
-		return {
-			year: now.getFullYear(),
-			month: now.getMonth(),
-			day: now.getDate()
-		};
 	}
 
 	showInputError(inputType, message = '') {
@@ -200,5 +191,6 @@ export default class DateTimeField extends Component {
 
 DateTimeField.propTypes = {
 	onChange: PropTypes.func.isRequired,
+	getDateObject: PropTypes.func.isRequired,
 	errors: PropTypes.array
 };

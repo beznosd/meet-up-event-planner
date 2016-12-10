@@ -9,8 +9,6 @@ import CreateEvent from './components/CreateEvent';
 import Event from './components/Event';
 import NotFound from './components/NotFound';
 
-import CreateEventPage from './components/create-event/CreateEventPage';
-
 export default (
   <Route path="/" component={App}>
     <IndexRoute component={SignUp} />
@@ -21,7 +19,6 @@ export default (
       <Route path=":eventId" component={Event} />
     </Route>
     <Route path="/create-event" component={CreateEvent} />
-    <Route path="/create-event-demo" component={CreateEventPage} />
     <Route path="*" component={NotFound} />
   </Route>
 );

@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 
 import TextField from './TextField';
+import GuestsField from './GuestsField';
 import DateTimeFields from './DateTimeFields';
 
 class CreateEventForm extends Component {
@@ -17,56 +18,35 @@ class CreateEventForm extends Component {
 				startDate: '',
 				startTime: '',
 				endDate: '',
-				endTime: ''
+				endTime: '',
+				guests: []
 			},
 			errors: [],
 			focusGuests: false,
 			progressWidth: 0
 		};
 
+		this.progressStep = 10;
+
 		this.onSubmitForm = this.onSubmitForm.bind(this);
 		this.onFocusGuests = this.onFocusGuests.bind(this);
 		this.onBlurGuests = this.onBlurGuests.bind(this);
-		this.onKeyPressGuests = this.onKeyPressGuests.bind(this);
 		this.onFormKeyPress = this.onFormKeyPress.bind(this);
-		this.onClickGuestList = this.onClickGuestList.bind(this);
 		this.onChangeTextField = this.onChangeTextField.bind(this);
-		this.onInputTextField = this.onInputTextField.bind(this);
 		this.onChangeDateField = this.onChangeDateField.bind(this);
+		this.onChangeGuestField = this.onChangeGuestField.bind(this);
 	}
 
 	componentDidMount() {
-
 		// Initialization of top progress
-
 		const progress = document.querySelector('.progress');
-
 		window.scrollTo(0, 0);
-
 		window.onscroll = () => {
 			progress.style.top = `${window.pageYOffset}px`;
 		};
 
-		const progressStep = 100 / 10;
-
-		// improve with bubbling, one callback to the form
-		// [].forEach.call(this.eventForm, (input) => {
-		// 	if (input.tagName === 'INPUT' || input.tagName === 'TEXTAREA') {
-		// 		input.oninput = () => {
-		// 			this.changePropgress(input, progressStep);
-		// 		};
-		// 		input.onchange = () => {
-		// 			this.changePropgress(input, progressStep);
-		// 		};
-		// 	}
-		// });
-
 		// initialization of google address autocomplete
 		new google.maps.places.Autocomplete(document.querySelector('input[id="location"]'));
-	}
-
-	onClickGuestList(evt) {
-		this.guestList.removeChild(evt.target.parentNode);
 	}
 
 	onFormKeyPress(evt) {
@@ -81,58 +61,6 @@ class CreateEventForm extends Component {
 
 	onBlurGuests(evt) {
 		this.setState({ focusGuests: false });
-		// if (!this.guestList.children.length) {
-		// 	this.showInputError('guests', 'This field is required');
-		// }
-	}
-
-	onKeyPressGuests(evt) {
-		const guestName = this.guestsInput.value;
-		if (evt.key === 'Enter' && guestName) {
-			const el = document.createElement('span');
-			el.innerHTML = `&bull; <span>${guestName}</span><br/>`;
-			el.className = 'guest';
-			this.guestList.appendChild(el);
-			this.guestsInput.value = '';
-			this.hideInputError('guests');
-		}
-	}
-
-	onInputTextField(evt) {
-		if (evt.target.value.trim()) {
-			this.hideInputError(evt.target.id);
-		}
-	}
-
-	changePropgress(input, progressStep) {
-		if (input.value.length !== 0 && !input.progressChecked) {
-			this.setState({ progressWidth: this.state.progressWidth + progressStep });
-			input.progressChecked = true;
-		}
-
-		if (input.value.length === 0 && input.progressChecked) {
-			this.setState({ progressWidth: this.state.progressWidth - progressStep });
-			input.progressChecked = false;
-		}
-	}
-
-	showInputError(inputType, message = '') {
-		this[`${inputType}Error`].textContent = message;
-		this[`${inputType}Input`].classList.add('invalid');
-	}
-
-	hideInputError(inputType) {
-		this[`${inputType}Error`].textContent = '';
-		this[`${inputType}Input`].classList.remove('invalid');
-	}
-
-	getDateObject() {
-		const now = new Date();
-		return {
-			year: now.getFullYear(),
-			month: now.getMonth(),
-			day: now.getDate()
-		};
 	}
 
 	onSubmitForm(evt) {
@@ -145,67 +73,51 @@ class CreateEventForm extends Component {
 		const startTime = this.state.event.startTime;
 		const endDate = this.state.event.endDate;
 		const endTime = this.state.event.endTime;
-		const location = this.state.event.location;
+		const guests = this.state.event.guests;
+		const location = document.getElementById('location').value;
 		const message = this.messageInput.value.trim();
-		const guestsElements = this.guestList.children;
 
-		let errors = [];
-		const errors2 = [];
+		const errors = [];
 
 		// collect errors
-		if (!name) errors2.push({ type: 'name', msg: 'Please provide event name' });
-		if (!type) errors2.push({ type: 'type', msg: 'Please provide event type' });
-		if (!host) errors2.push({ type: 'host', msg: 'Please provide event host' });
-		if (!startDate) errors2.push({ type: 'startDate', msg: 'Please choose start date of event' });
-		if (!startTime) errors2.push({ type: 'startTime', msg: 'Please choose start time of event' });
-		if (!endDate) errors2.push({ type: 'endDate', msg: 'Please choose end date of event' });
-		if (!endTime) errors2.push({ type: 'endTime', msg: 'Please choose end time of event' });
+		if (!name) errors.push({ type: 'name', msg: 'Please provide event name' });
+		if (!type) errors.push({ type: 'type', msg: 'Please provide event type' });
+		if (!host) errors.push({ type: 'host', msg: 'Please provide event host' });
+		if (!startDate) errors.push({ type: 'startDate', msg: 'Please choose start date of event' });
+		if (!startTime) errors.push({ type: 'startTime', msg: 'Please choose start time of event' });
+		if (!endDate) errors.push({ type: 'endDate', msg: 'Please choose end date of event' });
+		if (!endTime) errors.push({ type: 'endTime', msg: 'Please choose end time of event' });
 
 		if (new Date(startDate) > new Date(endDate)) {
-			errors2.push({ type: 'endDate', msg: 'End date cannot be lower then start date' });
+			errors.push({ type: 'endDate', msg: 'End date cannot be lower then start date' });
 		}
 
 		const date = this.getDateObject();
 		if (new Date(date.year, date.month, date.day) > new Date(startDate)) {
-			errors2.push({ type: 'startDate', msg: 'Event cannot be started in the past' });
+			errors.push({ type: 'startDate', msg: 'Event cannot be started in the past' });
 		}
 
 		if (new Date(date.year, date.month, date.day).toDateString() === new Date(startDate).toDateString()) {
 			if (parseInt(startTime, 10) < new Date().getHours()) {
-				errors2.push({ type: 'startTime', msg: 'Event cannot be started in the past' });
+				errors.push({ type: 'startTime', msg: 'Event cannot be started in the past' });
 			}
 		}
 
 		if (startDate === endDate && startDate && endDate) {
 			if (parseInt(startTime, 10) > parseInt(endTime, 10)) {
-				errors2.push({ type: 'endDate', msg: 'End date cannot be lower then start date' });
+				errors.push({ type: 'endDate', msg: 'End date cannot be lower then start date' });
 			}
 			if (startTime === endTime) {
-				errors2.push({ type: 'endTime', msg: 'Event cannot starts and ends at the same time' });
+				errors.push({ type: 'endTime', msg: 'Event cannot starts and ends at the same time' });
 			}
 		}
 
-		if (!guestsElements.length)	errors.push({ type: 'guests', msg: 'Please add at least one guest to event' });
-		if (!location) errors2.push({ type: 'location', msg: 'Please provide event location' });
+		if (!guests.length)	errors.push({ type: 'guests', msg: 'Please add at least one guest to event' });
+		if (!location) errors.push({ type: 'location', msg: 'Please provide event location' });
 
 		if (errors.length > 0) {
-			errors.forEach((error) => {
-				this.showInputError(error.type, error.msg);
-			});
-			errors = [];
-		}
-
-		if (errors2.length > 0) {
-			this.setState({ errors: errors2 });
-			// return false;
-		}
-
-		// console.log('adding event ...');
-		// return false;
-
-		const guests = [];
-		for (let i = 0; i < guestsElements.length; i++) {
-			guests.push(guestsElements[i].firstElementChild.textContent);
+			this.setState({ errors });
+			return false;
 		}
 		
 		const newEvent = {
@@ -215,29 +127,66 @@ class CreateEventForm extends Component {
 		this.props.createEvent(newEvent);
 	}
 
-	hideFieldError(fieldType) {
-		if (this.state.errors.findIndex(error => error.type === fieldType) > -1) {
-			const errors = this.state.errors.filter(error => error.type !== fieldType);
-			this.setState({ errors });
-		}
-	}
-
 	onChangeTextField(evt) {
 		this.hideFieldError(evt.target.id);
 
 		const event = this.state.event;
 		event[evt.target.id] = evt.target.value;
 
-		this.setState({ event });
+		const progressWidth = this.getNewPropgressWidth(this.progressStep);
+
+		this.setState({ event, progressWidth });
 	}
 
 	onChangeDateField(type, value) {
 		const event = this.state.event;
 		event[type] = value;
 
-		this.setState({ event });
+		const progressWidth = this.getNewPropgressWidth(this.progressStep);
+
+		this.setState({ event, progressWidth });
 	}
 
+	onChangeGuestField(eventType, value) {
+		this.hideFieldError('guests');
+
+		const event = this.state.event;
+		if (eventType === 'add') {
+			event.guests.push(value);
+		}
+		if (eventType === 'remove') {
+			event.guests.splice(event.guests.indexOf(value), 1);
+		}
+
+		const progressWidth = this.getNewPropgressWidth(this.progressStep);
+
+		this.setState({ event, progressWidth });
+	}
+
+	getDateObject() {
+		const now = new Date();
+		return {
+			year: now.getFullYear(),
+			month: now.getMonth(),
+			day: now.getDate()
+		};
+	}
+
+	getNewPropgressWidth(progressStep) {
+		const event = this.state.event;
+		let filledProps = 0;
+		for (const prop in event) {
+			if (event[prop].length) filledProps++;
+		}
+		return filledProps * progressStep;
+	}
+
+	hideFieldError(fieldType) {
+		if (this.state.errors.findIndex(error => error.type === fieldType) > -1) {
+			const errors = this.state.errors.filter(error => error.type !== fieldType);
+			this.setState({ errors });
+		}
+	}
 
 	render() {
 		const progressStyles = {
@@ -252,7 +201,7 @@ class CreateEventForm extends Component {
 					<h4 className="cols s3 center-align auth-header">Creation Of Event</h4>
 
 					<TextField 
-						onChange={this.onChangeTextField}
+						onInput={this.onChangeTextField}
 						value={this.state.event.name}
 						placeholder="Type event name here"
 						label="Event name"
@@ -262,7 +211,7 @@ class CreateEventForm extends Component {
 					/>
 
 					<TextField 
-						onChange={this.onChangeTextField}
+						onInput={this.onChangeTextField}
 						value={this.state.event.type}
 						placeholder="Type event type here"
 						label="Event type (birthday, conference, wedding, etc.)"
@@ -272,7 +221,7 @@ class CreateEventForm extends Component {
 					/>
 					
 					<TextField 
-						onChange={this.onChangeTextField}
+						onInput={this.onChangeTextField}
 						value={this.state.event.host}
 						placeholder="Type host name here"
 						label="Host (individual’s name or an organization)"
@@ -280,22 +229,25 @@ class CreateEventForm extends Component {
 						errors={this.state.errors}
 					/>
 
-					<DateTimeFields errors={this.state.errors} onChange={this.onChangeDateField} />
+					<DateTimeFields 
+						onChange={this.onChangeDateField} 
+						getDateObject={this.getDateObject} 
+						errors={this.state.errors} 
+					/>
 
-					<div className="row no-margin-row">
-						<div className="input-field col s12 m6 l4 push-s0 push-m3 push-l4">
-							<input onKeyPress={this.onKeyPressGuests} onBlur={this.onBlurGuests} onFocus={this.onFocusGuests} ref={(guestsInput) => { this.guestsInput = guestsInput; }} placeholder="Separate guests by pressing ENTER" id="guest-list" type="text" />
-							<label htmlFor="guest-list" className="active">Guest list (press enter to add guest, click on guest to remove from list)</label>
-							<div ref={(guestsError) => { this.guestsError = guestsError; }} className="error-msg"></div>
-						</div>
-					</div>
-
-					<div className="row">
-						<div onClick={this.onClickGuestList} ref={(guestList) => { this.guestList = guestList; }} className="input-field col s12 m6 l4 push-s0 push-m3 push-l4"></div>
-					</div>
+					<GuestsField
+						onBlur={this.onBlurGuests}
+						onFocus={this.onFocusGuests}
+						onChangeGuestField={this.onChangeGuestField}
+						placeholder="Separate guests by pressing ENTER"
+						label="Guest list (press enter to add guest, click on guest to remove from list)"
+						id="guests"
+						guests={this.state.event.guests}
+						errors={this.state.errors}
+					/>
 
 					<TextField 
-						onChange={this.onChangeTextField}
+						onInput={this.onChangeTextField}
 						value={this.state.event.location}
 						placeholder="Type the address of event"
 						label="Location"
