@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CssSourcemapPlugin = require('css-sourcemaps-webpack-plugin');
 
-const ENV_PRODUCTION = process.env.NODE_ENV || false;
+const ENV_PRODUCTION = process.env.NODE_ENV === 'production';
 
 module.exports = {
 	devtool: ENV_PRODUCTION ? 'source-map' : 'inline-source-map',
@@ -96,6 +96,8 @@ if (ENV_PRODUCTION) {
 			'process.env': { 
 				NODE_ENV: JSON.stringify('production') 
 			}
-		})
+		}),
+		new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.DedupePlugin() // eliminates duplicate packages
 	);
 }
