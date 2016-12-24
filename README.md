@@ -1,5 +1,5 @@
 # meet-up-event-planner
-On this branch project configured to be build with **brunch**
+On this branch project configured to be build with **brunch** <br/>
 Section "*How to run*" is updated here.
 
 Pretty simple event planner which includes creating and deleting of events, also login and signup.
