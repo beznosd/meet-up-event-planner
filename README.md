@@ -1,5 +1,5 @@
 # meet-up-event-planner
-On this branch project configured to be build with webpack
+On this branch project configured to be build with webpack <br/>
 Brunch build is available on the branch **brunch-build**
 
 Pretty simple event planner which includes creating and deleting of events, also login and signup.
