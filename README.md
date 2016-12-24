@@ -1,6 +1,6 @@
 # meet-up-event-planner
-Project for Udacity nanodegree program: Senior Web Developer by Google<br/>
-https://www.udacity.com/course/senior-web-developer-nanodegree-by-google--nd802
+On this branch project configured to be build with **brunch**
+Section "*How to run*" is updated here.
 
 Pretty simple event planner which includes creating and deleting of events, also login and signup.
 
@@ -12,8 +12,8 @@ Pretty simple event planner which includes creating and deleting of events, also
 1. Clone or download the repo and go to the project directory<br/>
 ```git clone https://github.com/beznosd/meet-up-event-planner.git```
 2. Install dependencies via npm ```npm install```
-3. Run ```npm start``` in project folder, wait a minute
-3. Open this address ```http://localhost:8080``` in your browser
+3. Run ```brunch watch --server``` in project folder, wait a minute
+3. Open this address ```http://localhost:3333``` in your browser
 
 ## Core libraries, frameworks, tools used in this project
 1. [React.js](https://facebook.github.io/react/) (library for building user interfaces by Facebook)
