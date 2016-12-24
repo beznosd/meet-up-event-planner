@@ -1,6 +1,6 @@
 # meet-up-event-planner
-Project for Udacity nanodegree program: Senior Web Developer by Google<br/>
-https://www.udacity.com/course/senior-web-developer-nanodegree-by-google--nd802
+On this branch project configured to be build with webpack
+Brunch build is available on the branch **brunch-build**
 
 Pretty simple event planner which includes creating and deleting of events, also login and signup.
 
